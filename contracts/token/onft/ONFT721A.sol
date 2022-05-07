@@ -34,13 +34,14 @@ contract ONFT721A is ONFT721Core, ERC721A {
         require(!_exists(_tokenId), "ERC721A: token already minted");
 
         _beforeTokenTransfers(address(0), _toAddress, _tokenId, 1);
+        unchecked {
+            _ownerships[_tokenId].addr = _toAddress;
+            _ownerships[_tokenId].startTimestamp = uint64(block.timestamp);
+            // Can't update the _addressData because it is private
+            // _addressData[_toAddress].balance += 1;
+            emit Transfer(address(0), _toAddress, _tokenId);
+        }
 
-        _ownerships[_tokenId].addr = _toAddress;
-        _ownerships[_tokenId].startTimestamp = uint64(block.timestamp);
-        // Can't update the _addressData because it is private
-        // _addressData[_toAddress].balance += 1;
-
-        emit Transfer(address(0), _toAddress, _tokenId);
 
         _afterTokenTransfers(address(0), _toAddress, _tokenId, 1);
     }
